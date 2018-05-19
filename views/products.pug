@@ -38,7 +38,7 @@ block content
                         .productqty.mt-2
                             h6 Price 
                             span.ml-3
-                                .h4.font-weight-bold #{product.price}
+                                .h4.font-weight-bold.productPrice #{product.price}
                 .card-footer.py-2
                     .productqty
                         label.mr-2 Q'ty:
@@ -92,7 +92,7 @@ block content
                 let parent = $(this).offsetParent()
                 let productId =  parent[0].id
                 let qty = parseInt($(this).siblings('input')[0].value)
-                let price = parseFloat(parent.find('.infotext h4').text())
+                let price = parseFloat(parent.find('.productPrice').text())
                 let item = {
                     name: parent.find('.card-title').text(),
                     qty: qty,
