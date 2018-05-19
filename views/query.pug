@@ -1,0 +1,32 @@
+extends layout
+
+block content
+    .container.px-4.pt-4
+        .display-4.text-center Your Orders
+        div.mt-5
+            if (orders.length == 0)
+                .text-center
+                    h5.text-info You have no orders.
+                    a.mt-5.w-50.btn.btn-primary(href='/stores') Go shopping now!
+
+            else 
+                each order in orders
+                    .card.mb-4
+                        .card-body
+                            span.badge.badge-secondary Order no.
+                            .orderNo.text-secondary.orderInfo #{order.orderId}
+                            span.badge.badge-info Created Time
+                            .orderTime #{order.created}
+                            span.badge.badge-info Status
+                            if (order.status = 1)
+                                .orderStatus Processing
+                            h5.text-right.mt-3 Total price (USD): #{order.totalprice}
+                            a.btn.btn-primary.btn-sm.float-right(href='/orderdetail/'+order.orderId) Details
+    
+    script.
+        $(document).ready(function(){
+            $('.orderTime').each(function(index,item){
+                let formatedT = moment($(item).text()).format('YYYY MMM D k:mm')
+                $(item).text(formatedT)
+            })
+        })

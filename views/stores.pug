@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    .container.px-4.pt-4
+        .display-4.text-center.font-weight-bold Online Shopping
+        div.mt-5
+            each store in stores
+                .card.mb-4
+                    .card-header.h4.text-right #{store.name}
+                    .card-body
+                        a(href='/products/'+store.providerId)
+                            img.w-100(src='/images/'+store.mark)
+    
+    script.
+        localStorage.removeItem('cart')
+        localStorage.setItem('customerId','#{customerId}')

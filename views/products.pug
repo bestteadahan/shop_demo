@@ -1,0 +1,117 @@
+extends layout
+
+block content
+    .container.px-4.py-5
+        .providerInfo
+            .display-4 #{providerInfo.name}
+            .card.d-inline-block.mt-3
+                .card-header.h6.text-right Brand story
+                .card-body    
+                    img.w-50.mr-2.mb-2.float-left(src='/images/'+providerInfo.mark)
+                    p #{providerInfo.description}
+
+        each product in products
+            - let proId = product.productId
+            .card.w-100.my-3(id=proId)
+                .card-head
+                    div.carousel.slide(id="slide"+proId data-ride="carousel")
+                        div.carousel-inner
+                            each pic in product.pictures.split(';')
+                                div.carousel-item
+                                    img(src='/images/'+pic)
+                        a.carousel-control-prev(href="#slide"+proId role="button" data-slide="prev")
+                            span.carousel-control-prev-icon(aria-hidden="true")
+                            span.sr-only Previous
+                        a.carousel-control-next(href="#slide"+proId role="button" data-slide="next")
+                            span.carousel-control-next-icon(aria-hidden="true")
+                            span.sr-only Next
+                .card-body
+                    h5.card-title #{product.name}
+                    .card-body
+                        .text-monospace #{product.description}
+                        .infotext.d-flex.w-100.mt-2
+                            //- .float-left
+                                if (product.qty >=1)
+                                    h6.text-info In stock
+                                else
+                                    h6.text-danger Sold out
+                            .float-right
+                                h6.inline Price: 
+                                h4= product.price
+                .card-footer.py-2
+                    .productqty
+                        label.mr-2 Q'ty:
+                        i.minusone.fa.fa-minus-circle.mx-1
+                        input.pqty.form-control.form-control-sm(type='text' name='shopqty' value=1 style='width:15%')
+                        i.addone.fa.fa-plus-circle.mx-1
+                        button.addToCart.btn.btn-sm.btn-primary.ml-3
+                            i.fa.fa-cart-arrow-down
+                            span.ml-2 Add to cart
+
+    footer.footer
+        a.btn.btn-warning(href='/stores')
+            i.fa.fa-arrow-left
+            span.ml-2 Other Stores
+        button(type='submit' form='hiddenform').viewCart.btn.btn-primary.text-light
+            span View Cart
+            i.fa.fa-shopping-cart.ml-2
+        form#hiddenform.d-none(action='/viewcart' method='POST')
+            input(hidden type='text' name='providerId' value=providerId)
+
+
+    script.
+        localStorage.setItem('customerId','#{customerId}')
+
+        $(document).ready(function(){
+
+            //- localStorage.removeItem('cart')
+
+            let providerId = "#{providerId}"
+            $(".carousel-item:first-of-type").addClass('active')
+
+            $(".addone").click(function(){
+                let pqty = $(this).siblings('input')[0]
+                pqty.value = parseInt(pqty.value) + 1
+            })
+
+            $(".minusone").click(function(){
+                let pqty = $(this).siblings('input')[0]
+                if (parseInt(pqty.value) >1) pqty.value = parseInt(pqty.value) - 1
+                else pqty.value = 1
+            })
+
+            $(".addToCart").click(function(){
+                let list
+                if (localStorage.getItem('cart')!=null) {
+                    list = JSON.parse(localStorage.getItem('cart'))
+                } else {
+                    list = {}
+                }
+
+                let parent = $(this).offsetParent()
+                let productId =  parent[0].id
+                let qty = parseInt($(this).siblings('input')[0].value)
+                let price = parseFloat(parent.find('.infotext h4').text())
+                let item = {
+                    name: parent.find('.card-title').text(),
+                    qty: qty,
+                    price: price,
+                    subtotal: price*qty
+                }
+
+                list[productId] = item
+                //- console.dir(list)
+                localStorage.setItem('cart',JSON.stringify(list))
+                checkCartAvailable()
+            })
+
+            checkCartAvailable()
+
+            function checkCartAvailable() {
+                if (localStorage.getItem('cart')==null) {
+                    $('.viewCart').addClass('btn-secondary').removeClass('btn-primary').attr('disabled',true)
+                } else {
+                    $('.viewCart').addClass('btn-primary').removeClass('btn-secondary').attr('disabled',false)
+                }
+            }
+        })

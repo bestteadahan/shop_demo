@@ -1,0 +1,169 @@
+extends layout
+
+block content
+    .container.px-4.pt-4
+        .display-4 Cart Review
+
+        .card.w-100.my-3
+            .card-header Cart list
+            ul#itemlist.list-group.list-group-flush
+
+        hr.mt-5
+
+        .d-flex.w-100.justify-content-end.align-items-center
+            h5.d-inline Total price (USD): 
+            #totalprice.h2.ml-3
+
+    footer.footer
+        a.btn.btn-warning(href='/products/'+providerId)
+            i.fa.fa-arrow-left
+            span.ml-2 Back
+        a.checkOut.btn.btn-primary.text-light
+            span Check out!
+            i.fa.fa-credit-card.ml-2
+    
+    #notice.modal.fade(data-backdrop='static' data-keyboard='false')
+        .modal-dialog.modal-dialog-centered
+            .modal-content
+                .modal-header
+                    h5.modal-title Congratulations!
+                .modal-body.text-center
+                    img(src="images/done.png" style='height:50px')
+                    p Your order has been sent!
+                    a.btn.btn-primary(href='/stores') Back to market
+
+    #error.modal.fade(data-backdrop='static' data-keyboard='false')
+        .modal-dialog.modal-dialog-centered
+            .modal-content
+                .modal-header
+                    h5.modal-title Oops!
+                .modal-body.text-center
+                    img(src="images/empty.png" style='height:50px')
+                    p Your shopping cart is empty!
+                    a.btn.btn-primary(href='/products/'+providerId) Back to store
+
+    script.
+        $(document).ready(function(){
+            let providerId = "#{providerId}"
+            let cart = JSON.parse(localStorage.getItem('cart'))
+            let productIds = Object.keys(cart)
+
+            countTotalPrice()
+
+            function countTotalPrice() {
+                let totalprice = 0
+                let cart = JSON.parse(localStorage.getItem('cart'))
+                for (item in cart) {
+                    totalprice += cart[item].subtotal
+                }
+                $("#totalprice").text(totalprice.toFixed(2))
+            }
+
+            productIds.forEach(createListItem)
+
+            //- console.log(cart)
+
+            function createListItem(productId) {
+                let itemlist = $("#itemlist")
+                let item = cart[productId]
+
+                let li = $(document.createElement('li'))
+                    .attr('class','list-group-item')
+                    .attr('id',productId)
+                let p = $(document.createElement('p'))
+                    .attr('class','h6')
+                    .text(`${item.name}`)
+                let div = $(document.createElement('div'))
+                    .attr('class','productqty')
+                let label = $(document.createElement('label'))
+                    .text("Q'ty:")
+                let im = $(document.createElement('i'))
+                    .attr('class','minusone fa fa-minus-circle mx-2')
+                let ia = $(document.createElement('i'))
+                    .attr('class','addone fa fa-plus-circle mx-2')
+                let input = $(document.createElement('input'))
+                    .attr('class','pqty form-control form-control-sm')
+                    .attr('type','text')
+                    .css('width','15%')
+                    .val(item.qty)
+                let button = $(document.createElement('button'))
+                    .attr('class','deleteItem btn btn-sm btn-danger ml-3')
+                    .text('Delete')
+                
+                div.append(label, im, input, ia, button)
+                li.append(p, div)
+                itemlist.append(li)
+            }
+
+
+            $(".addone").click(function(){
+                let pqty = $(this).siblings('input')[0]
+                pqty.value = parseInt(pqty.value) + 1
+
+                //- console.log(pqty.value)
+                let parent = $(this).offsetParent()
+                let productId =  parent[0].id
+                cart[productId].qty = pqty.value
+                cart[productId].subtotal = cart[productId].price*pqty.value
+                localStorage.setItem('cart',JSON.stringify(cart))
+                countTotalPrice()
+            })
+
+            $(".minusone").click(function(){
+                let pqty = $(this).siblings('input')[0]
+                if (parseInt(pqty.value) >1) pqty.value = parseInt(pqty.value) - 1
+                else pqty.value = 1
+
+                let parent = $(this).offsetParent()
+                let productId =  parent[0].id
+                cart[productId].qty = pqty.value
+                cart[productId].subtotal = cart[productId].price*pqty.value
+                localStorage.setItem('cart',JSON.stringify(cart))
+                countTotalPrice()
+            })
+
+            $(".deleteItem").click(function(){
+                let parent = $(this).offsetParent()
+                let productId =  parent[0].id
+                //- console.log(productId)
+                parent.remove()
+                delete cart[productId]
+                //- console.log(cart)
+                if ( cart = {} ){
+                    localStorage.removeItem('cart')
+                } else {
+                    localStorage.setItem('cart',JSON.stringify(cart))
+                }
+                countTotalPrice()
+            })
+
+            $('.checkOut').click(function(){
+                let cart = localStorage.getItem('cart')
+                let totalprice = parseFloat($("#totalprice").text())
+
+                console.dir(cart)
+
+                if (cart != null && totalprice != 0 ) {
+                    $.ajax({
+                        type:'POST',
+                        url:'/checkout',
+                        dataType:'json',
+                        data: {
+                            order: cart,
+                            providerId: providerId,
+                            totalprice: parseFloat($("#totalprice").text()),
+                            customerId: localStorage.getItem('customerId')
+                        }
+                    }).done((res)=>{
+                        //- console.log(res)
+                        if (res) {
+                            $("#notice").modal('show')
+                            localStorage.removeItem('cart')
+                        }
+                    })
+                } else {
+                    $("#error").modal('show')
+                    localStorage.removeItem('cart')
+                }
+            })
+        })

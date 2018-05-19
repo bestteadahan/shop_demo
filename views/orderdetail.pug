@@ -1,0 +1,38 @@
+extends layout
+
+block content
+    .container.px-4.pt-4.mb-5
+        .display-4 Order Details
+
+        .card.w-100.my-3
+            .card-header Information and Item List 
+            ul#itemlist.list-group.list-group-flush
+                li.list-group-item
+                    .orderInfo.text-right
+                        span.badge.badge-info Created Time
+                        .orderTime #{order.created}
+                        span.badge.badge-info Status
+                        if (order.status = 1)
+                            .orderStatus Processing
+                        p Total price (USD): #{order.totalprice}
+                each product in products
+                    li.list-group-item(id=product.productId)
+                        img.mr-3.float-left(src="/images/"+product.pictures style='height:100px')
+                        h5 #{product.name}
+                        .orderqtyinfo
+                            .text Q'ty: #{product.qty}
+                            .text Subtotal: #{product.subtotal}
+
+    footer.footer
+        .d-inline-flex.w-100.justify-content-around
+            a.btn.btn-warning(href='/query')
+                i.fa.fa-arrow-left
+                span.ml-2 Back
+    
+    script.
+        $(document).ready(function(){
+            $('.orderTime').each(function(index,item){
+                let formatedT = moment($(item).text()).format('YYYY MMM D k:mm')
+                $(item).text(formatedT)
+            })
+        })
