@@ -1,9 +1,8 @@
 extends layout
 
 block content
-    .container.px-4.pt-4
-        .display-4 Cart Review
-
+    .mktitle Cart Review
+    .mkdiv
         .card.w-100.my-3
             .card-header Cart list
             ul#itemlist.list-group.list-group-flush
@@ -129,7 +128,7 @@ block content
                 parent.remove()
                 delete cart[productId]
                 //- console.log(cart)
-                if ( cart = {} ){
+                if ( cart == {} ){
                     localStorage.removeItem('cart')
                 } else {
                     localStorage.setItem('cart',JSON.stringify(cart))

@@ -1,13 +1,14 @@
 extends layout
 
 block content
-    .container.px-4.py-5
+    .mktitle #{providerInfo.name}
+    .mkdiv
         .providerInfo
-            .display-4 #{providerInfo.name}
+            //- .display-4 #{providerInfo.name}
             .card.d-inline-block.mt-3
                 .card-header.h6.text-right Brand story
                 .card-body    
-                    img.w-50.mr-2.mb-2.float-left(src='/images/'+providerInfo.mark)
+                    img.w-50.mr-3.mb-1.float-left(src='/images/'+providerInfo.mark)
                     p #{providerInfo.description}
 
         each product in products
@@ -29,15 +30,15 @@ block content
                     h5.card-title #{product.name}
                     .card-body
                         .text-monospace #{product.description}
-                        .infotext.d-flex.w-100.mt-2
-                            //- .float-left
-                                if (product.qty >=1)
-                                    h6.text-info In stock
-                                else
-                                    h6.text-danger Sold out
-                            .float-right
-                                h6.inline Price: 
-                                h4= product.price
+                        .text-left.mt-1
+                            if (product.qty >=1)
+                                h6.text-info In stock
+                            else
+                                h6.text-danger Sold out
+                        .productqty.mt-2
+                            h6 Price 
+                            span.ml-3
+                                .h4.font-weight-bold #{product.price}
                 .card-footer.py-2
                     .productqty
                         label.mr-2 Q'ty:

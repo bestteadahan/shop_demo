@@ -1,10 +1,9 @@
 extends layout
 
 block content
-    .container.px-4.pt-4.mb-5
-        .display-4 Order Details
-
-        .card.w-100.my-3
+    .mktitle Order Details
+    .mkdiv
+        .card
             .card-header Information and Item List 
             ul#itemlist.list-group.list-group-flush
                 li.list-group-item
@@ -17,7 +16,7 @@ block content
                         p Total price (USD): #{order.totalprice}
                 each product in products
                     li.list-group-item(id=product.productId)
-                        img.mr-3.float-left(src="/images/"+product.pictures style='height:100px')
+                        img.mr-3.float-left(src="/images/"+product.pictures style='width:40%;margin:auto')
                         h5 #{product.name}
                         .orderqtyinfo
                             .text Q'ty: #{product.qty}
