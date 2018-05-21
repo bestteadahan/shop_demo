@@ -5,14 +5,18 @@ const db = require('./awsdb')
 /* GET users listing. */
 router.get('/', function (req, res) {
 
-    let customerId = req.headers.pid
+    let pid = req.headers.pid
 
-    if (customerId === undefined) {
-        customerId = '12345678'
+    if (pid === undefined) {
+        pid = req.query.pid
     }
 
-    db.getOrders(customerId)
-        .then(rows => res.render('query', { orders: rows }))
+    if (pid === undefined) {
+        pid = '12345678'
+    }
+
+    db.getOrders(pid)
+        .then(rows => res.render('query', { orders: rows, pid: pid }))
 });
 
 module.exports = router;

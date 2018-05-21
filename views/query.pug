@@ -20,7 +20,7 @@ block content
                         if (order.status = 1)
                             .orderStatus Processing
                         h5.text-right.mt-3 Total price (USD): #{order.totalprice}
-                        a.btn.btn-primary.btn-sm.float-right(href='/orderdetail/'+order.orderId) Details
+                        a.btn.btn-primary.btn-sm.float-right(href=`/orderdetail?pid=${pid}&oid=${order.orderId}`) Details
     
     script.
         $(document).ready(function(){

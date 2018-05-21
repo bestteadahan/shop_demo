@@ -78,7 +78,7 @@ exports.insertOrderdetail = (orderdetail) => {
 
 exports.getOrders = (customerId) => {
     return new Promise((resolve, reject) => {
-        pool.query(`SELECT * FROM orders WHERE customerId='${customerId}' ORDER BY updated`, (err, rows) => {
+        pool.query(`SELECT * FROM orders WHERE customerId='${customerId}' ORDER BY updated DESC`, (err, rows) => {
             if (err) reject(err)
             else resolve(rows)
         })
