@@ -2,9 +2,9 @@ const mysql = require('mysql');
 
 const pool = mysql.createPool({
     connectionLimit: 5,
-    host: 'ofw.cfrqis2mrcuf.ap-southeast-1.rds.amazonaws.com',
-    user: 'ofwsa',
-    password: 'wtk-ofw#0402',
+    host: '[HOST]',
+    user: '[USERNAME]',
+    password: '[PASSWORD]',
     database: 'serviceProviders',
     timezone: 'utc',
     multipleStatements: true

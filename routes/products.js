@@ -25,19 +25,4 @@ router.get('/:id', function (req, res) {
         }))
 });
 
-// router.post('/', (req, res) => {
-
-//     let items = req.body.items.split(';'),
-//         providerId = req.body.providerId
-//     console.log(providerId)
-//     console.log(items)
-
-//     let sess = {
-//         items: items,
-//         providerId: providerId
-//     }
-//     req.session.sess = JSON.stringify(sess)
-//     res.json(true)
-// })
-
 module.exports = router;
